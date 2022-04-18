@@ -11,6 +11,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name][contenthash].js', // matches file name defined in entry - including content hash
     clean: true,  // remove old files in dist folder
+    assetModuleFilename: '[name][ext]'
   },
   devtool: 'source-map',  // generate source map
   devServer: {
@@ -26,12 +27,32 @@ module.exports = {
   module: {
     rules: [
       {
+        // rules for sass files only
         test:/\.scss$/,
         use: [
           'style-loader',
           'css-loader',
           'sass-loader',
         ]
+      },
+      {
+        // rules for all js files (except node_modules)
+        test: /\.js$/,  
+        exclude: /node_modules/, 
+        use: {  
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              '@babel/preset-env'
+            ]
+          }
+        }
+      },
+      {
+        // rules for image files (i = case insensitive)
+        test: /\.(png|svg|gif|jpg|jpeg)$/i,
+        type: 'asset/resource',
+
       }
     ],
   },
